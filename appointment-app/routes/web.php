@@ -1,5 +1,4 @@
 <?php
-
 //use App\Http\Controllers\Teams\TeamInvitationController;
 //use App\Http\Middleware\EnsureTeamMembership;
 //use Laravel\Fortify\Features;
