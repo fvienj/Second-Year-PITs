@@ -120,17 +120,16 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // Initialize interactive map - USTP CDO Coordinates
   document.addEventListener('DOMContentLoaded', function() {
-    // USTP Cagayan de Oro coordinates: 8.4786° N, 124.8864° E
-    const map = L.map('map').setView([8.4786, 124.8864], 16);
+    // Updated to USTP CDO Coordinates: 8.4851, 124.6565
+    const map = L.map('map').setView([8.4851, 124.6565], 16);
     
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© OpenStreetMap contributors'
     }).addTo(map);
 
     // Clinic marker at USTP CDO
-    L.marker([8.4786, 124.8864])
+    L.marker([8.4851, 124.6565])
       .addTo(map)
       .bindPopup(`
         <div style="text-align: center; font-family: 'Inter', sans-serif;">
