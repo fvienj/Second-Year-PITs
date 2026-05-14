@@ -1,0 +1,339 @@
+/* Services Page Styling */
+
+.services-main {
+  width: min(100%, 1200px);
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  padding: 3.5rem;
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 42px;
+  box-shadow: 0 32px 90px rgba(45, 14, 100, 0.12);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+}
+
+.services-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.services-header h1 {
+  margin-bottom: 1.5rem;
+}
+
+.services-header .lead {
+  margin: 0 auto 0;
+  max-width: 600px;
+}
+
+/* Services Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.service-card {
+  background: linear-gradient(135deg, #f6f8ff 0%, #f0e6ff 100%);
+  padding: 2rem;
+  border-radius: 16px;
+  border: 2px solid #e8deff;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(45, 14, 100, 0.08), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.service-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 48px rgba(45, 14, 100, 0.15);
+  border-color: #d4b3ff;
+}
+
+.service-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.service-card h3 {
+  margin: 0;
+  color: #2d0e64;
+  font-size: 1.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.service-description {
+  margin: 0;
+  color: #475c7a;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+
+.service-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #e8deff;
+  position: relative;
+  z-index: 1;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.detail-item .label {
+  color: #2d0e64;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.detail-item .value {
+  color: #5f4788;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Dentists Section */
+.dentists-section {
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(45, 14, 100, 0.05) 0%, rgba(95, 71, 136, 0.05) 100%);
+  border-radius: 16px;
+}
+
+.dentists-section h2 {
+  text-align: center;
+  color: #2d0e64;
+  margin-top: 0;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+.dentists-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.dentist-card {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  text-align: left;
+  border: 2px solid #e8deff;
+  transition: all 0.3s ease;
+}
+
+.dentist-card:hover {
+  box-shadow: 0 12px 32px rgba(45, 14, 100, 0.12);
+  border-color: #d4b3ff;
+}
+
+.dentist-avatar {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #2d0e64 0%, #5f4788 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin: 0 auto 1rem;
+}
+
+.dentist-card h3 {
+  margin: 0 0 0.5rem;
+  color: #2d0e64;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.dentist-title {
+  margin: 0 0 1rem;
+  color: #5f4788;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.dentist-info-list {
+  margin: 1rem 0 0;
+  padding-left: 1rem;
+  text-align: left;
+  color: #475c7a;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  list-style: none;
+}
+
+.dentist-info-list li {
+  margin-bottom: 0.75rem;
+}
+
+.dentist-info-list strong {
+  color: #2d0e64;
+}
+
+.dentist-bio {
+  margin: 0;
+  color: #475c7a;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Availability Section */
+.availability-section {
+  padding: 2rem;
+  background: linear-gradient(135deg, #f6f8ff 0%, #f0e6ff 100%);
+  border-radius: 16px;
+  border: 2px solid #e8deff;
+}
+
+.availability-section h2 {
+  text-align: center;
+  color: #2d0e64;
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.8rem;
+}
+
+.availability-container {
+  max-width: 500px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.availability-info {
+  color: #2d0e64;
+  line-height: 2;
+}
+
+.availability-info p {
+  margin: 0.5rem 0;
+  font-size: 1.05rem;
+}
+
+.availability-info .note {
+  margin-top: 1rem;
+  color: #5f4788;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+/* Booking Section */
+.booking-section {
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, rgba(45, 14, 100, 0.08) 0%, rgba(95, 71, 136, 0.08) 100%);
+  border-radius: 16px;
+}
+
+.booking-section h2 {
+  color: #2d0e64;
+  margin-top: 0;
+  font-size: 1.8rem;
+}
+
+.booking-section p {
+  color: #475c7a;
+  margin-bottom: 2rem;
+  font-size: 1.05rem;
+}
+
+.booking-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .services-main {
+    padding: 1.5rem;
+    gap: 2.5rem;
+  }
+
+  .services-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .dentists-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .booking-buttons {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .primary-button,
+  .payment-button {
+    width: 100%;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1.5rem;
+  }
+
+  .services-header h1 {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .services-main {
+    padding: 1rem;
+    gap: 2rem;
+  }
+
+  .service-card {
+    padding: 1.5rem;
+  }
+
+  .dentist-card {
+    padding: 1.5rem;
+  }
+
+  .availability-section,
+  .booking-section {
+    padding: 1.5rem;
+  }
+
+  .modal-content {
+    margin: 20% auto;
+    padding: 1rem;
+  }
+}
