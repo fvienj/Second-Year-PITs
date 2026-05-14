@@ -145,48 +145,145 @@
   </div>
 
   <script>
-    // Dynamic payment calculation
-    document.getElementById('service').addEventListener('change', updatePayment);
-    document.querySelectorAll('input[name="paymentMethod"]').forEach(radio => {
-      radio.addEventListener('change', updatePayment);
+// Enhanced booking system for updated form (with email, contact, cash payment)
+document.addEventListener('DOMContentLoaded', function() {
+  // Dynamic payment calculation (updated for new services)
+  const serviceSelect = document.getElementById('service');
+  const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
+  
+  serviceSelect.addEventListener('change', updatePayment);
+  paymentRadios.forEach(radio => radio.addEventListener('change', updatePayment));
+
+  // Sunday blocking + min date
+  function setupDateRestrictions() {
+    const appointmentDate = document.getElementById('appointmentDate');
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    
+    // Set minimum date to tomorrow
+    appointmentDate.min = tomorrow.toISOString().split('T')[0];
+    
+    // Block Sundays
+    appointmentDate.addEventListener('change', function() {
+      const selectedDate = new Date(this.value);
+      if (selectedDate.getDay() === 0) { // Sunday
+        alert('❌ Clinic is CLOSED on Sundays.\nPlease select Monday - Saturday.');
+        this.value = '';
+        this.focus();
+      }
     });
+  }
 
-    function updatePayment() {
-      const serviceSelect = document.getElementById('service');
-      const serviceValue = serviceSelect.value;
-      const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
-      
-      let cost = 0;
-      if (serviceValue.includes('150k')) cost = 150000;
-      else if (serviceValue.includes('20k') || serviceValue.includes('40k')) cost = 30000;
-      else if (serviceValue.includes('5k') || serviceValue.includes('12k')) cost = 8500;
-      else if (serviceValue.includes('800') || serviceValue.includes('1.2k')) cost = 1000;
-      else if (serviceValue.includes('500') || serviceValue.includes('1.5k')) cost = 1000;
-      else if (serviceValue.includes('28k') || serviceValue.includes('300k')) cost = 50000;
+  function updatePayment() {
+    const serviceValue = serviceSelect.value;
+    
+    let cost = 0;
+    if (serviceValue.includes('150k')) cost = 150000;
+    else if (serviceValue.includes('20k') || serviceValue.includes('40k')) cost = 30000;
+    else if (serviceValue.includes('5k') || serviceValue.includes('12k')) cost = 8500;
+    else if (serviceValue.includes('800') || serviceValue.includes('1.2k')) cost = 1000;
+    else if (serviceValue.includes('500') || serviceValue.includes('1.5k')) cost = 1000;
+    else if (serviceValue.includes('28k') || serviceValue.includes('300k')) cost = 50000; // Braces
 
-      document.getElementById('serviceCost').textContent = `Php ${cost.toLocaleString()}`;
-      
-      const total = paymentMethod === 'full' ? cost : Math.round(cost * 0.5);
-      document.getElementById('totalAmount').textContent = `Php ${total.toLocaleString()}`;
+    document.getElementById('serviceCost').textContent = `Php ${cost.toLocaleString()}`;
+    document.getElementById('totalAmount').textContent = `Php ${cost.toLocaleString()}`; // Cash = full amount
+  }
 
-      // Set min appointment date to tomorrow
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      document.getElementById('appointmentDate').min = tomorrow.toISOString().split('T')[0];
+    document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Final Sunday check
+    const appointmentDate = document.getElementById('appointmentDate').value;
+    const selectedDate = new Date(appointmentDate);
+    if (selectedDate.getDay() === 0) {
+      alert('❌ Sunday bookings not allowed. Clinic closed.');
+      return;
     }
 
-    // Form submission
-    document.getElementById('bookingForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    // Get all form data (matches your NEW field names)
+    const formData = new FormData(this);
+    const bookingData = Object.fromEntries(formData);
+    
+    // 1. Show loading state
+    const submitBtn = this.querySelector('.primary-button');
+    const originalText = submitBtn.textContent;
+    submitBtn.innerHTML = '⏳ Processing...';
+    submitBtn.disabled = true;
+
+    // 2. Simulate server processing (2 seconds)
+    setTimeout(() => {
+      showBookingSuccess(bookingData);
       
-      // Simulate form submission
-      const formData = new FormData(this);
-      const bookingData = Object.fromEntries(formData);
+      // 3. Reset form for next booking
+      this.reset();
+      updatePayment();
       
-      // Show success message (in real app, send to server)
-      alert('Appointment booked successfully! You will receive a confirmation email shortly.\n\n' + 
-            JSON.stringify(bookingData, null, 2));
-    });
-  </script>
+      // 4. Restore button
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
+    }, 2000);
+  });
+
+  // Beautiful Success Modal (Updated for your fields)
+  function showBookingSuccess(data) {
+    const modal = document.createElement('div');
+    modal.className = 'booking-success-modal';
+    modal.innerHTML = `
+      <div class="success-content">
+        <div class="success-icon">✅</div>
+        <h2>Appointment Confirmed!</h2>
+        <p class="success-subtitle">Your booking has been successfully scheduled.</p>
+        
+        <div class="booking-summary">
+          <div class="summary-row">
+            <span>👤 ${data.pfirstName} ${data.plastName}</span>
+            <span>📧 ${data.patientemail}</span>
+          </div>
+          <div class="summary-row">
+            <span>📞 ${data.patientcontact}</span>
+            <span>🎂 ${data.dateOfBirth}</span>
+          </div>
+          <div class="summary-row">
+            <span>🦷 ${data.service}</span>
+            <span>👩‍⚕️ ${data.dentist}</span>
+          </div>
+          <div class="summary-row highlight">
+            <span>📅 ${data.appointmentDate}</span>
+            <span>🕒 ${data.appointmentTime}</span>
+          </div>
+          <div class="summary-row highlight">
+            <span>💰 Cash Payment</span>
+            <span>Php ${document.getElementById('totalAmount').textContent}</span>
+          </div>
+        </div>
+        
+        <div class="confirmation-details">
+          <p><strong>📧 Confirmation Email:</strong> Sent to ${data.patientemail}</p>
+          <p><strong>📱 SMS Confirmation:</strong> Sent to ${data.patientcontact}</p>
+          <p><strong>⏰ Expected Reply:</strong> Within 24 hours</p>
+        </div>
+        
+        <div class="success-actions">
+          <button onclick="window.location.href='contact.html'" class="secondary-btn">
+            Contact Us
+          </button>
+          <button onclick="this.closest('.booking-success-modal').remove()" class="primary-btn">
+            Book Another
+          </button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    
+    // Auto-close after 15 seconds
+    setTimeout(() => modal.remove(), 15000);
+  }
+
+  // Initialize everything
+  setupDateRestrictions();
+  updatePayment();
+});
+</script>
 </body>
 </html>
