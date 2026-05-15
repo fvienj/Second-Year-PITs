@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  
   <title>Book Appointment | Bag-Ang Dental Clinic</title>
   <link rel="stylesheet" href="{{ asset('css/book.css') }}" />
   <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
@@ -10,7 +12,7 @@
 <body>
   <div class="page-shell">
     <header class="site-header">
-      <a class="brand" href="index.html">Bag-ang Dental Clinic</a>
+      <a class="brand" href="{{ url('/home') }}">Bag-ang Dental Clinic</a>
       <nav class="site-nav" aria-label="Primary">
         <a href="{{ url('/home') }}">Home</a>
         <a href="{{ url('/about') }}">About Us</a>
@@ -30,65 +32,61 @@
       <section class="booking-form-section">
         <form class="booking-form" id="bookingForm">
           <div class="form-grid">
-            <!-- Patient Information -->
             <div class="form-group">
-              <label for="pfirstName">First Name *</label>
-              <input name="first_name" type="text" id="pfirstName" name="pfirstName" required /> <!-- FIRST NAME -->
+              <label for="first_name">First Name *</label>
+              <input type="text" id="first_name" name="first_name" required />
             </div>
 
             <div class="form-group">
-              <label for="plastName">Last Name *</label>
-              <input name="last_name" type="text" id="plastName" name="plastName" required /> <!-- LAST NAME -->
+              <label for="last_name">Last Name *</label>
+              <input type="text" id="last_name" name="last_name" required />
             </div>
 
             <div class="form-group">
-              <label for="patientemail">Email *</label>
-              <input name="patient_email" type="email" id="patientemail" name="patientemail" required /> <!-- EMAIL -->
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" required />
             </div>
 
             <div class="form-group">
-              <label for="patientcontact">Contact Number *</label>
-              <input name="patient_contact" type="text" id="patientcontact" name="patientcontact" required /> <!-- CONTACT -->
+              <label for="contact">Contact Number *</label>
+              <input type="text" id="contact" name="contact" required />
             </div>
 
             <div class="form-group full-width">
-              <label for="dateOfBirth">Date of Birth *</label>
-              <input name="patient_dob" type="date" id="dateOfBirth" name="dateOfBirth" required /> <!-- DOB -->
+              <label for="dob">Date of Birth *</label>
+              <input type="date" id="dob" name="dob" required />
             </div>
 
-            <!-- Service Selection -->
             <div class="form-group full-width">
               <label for="service">Service Type *</label>
-              <select name="service" id="service" name="service" required>
+              <select id="service" name="service" required>
                 <option value="">Select a service</option>
-                <option value="Dental Bonding - Php 150k">Dental Bonding - Php 150k</option>
-                <option value="Dental Crowns - Php 20k-40k">Dental Crowns - Php 20k-40k</option>
-                <option value="Dentures - Php 5k-12k">Dentures - Php 5k-12k</option>
-                <option value="Teeth Cleaning - Php 800-1.2k">Teeth Cleaning - Php 800-1.2k</option>
-                <option value="Tooth Extractions - Php 500-1.5k">Tooth Extractions - Php 500-1.5k</option>
-                <option value="Orthodontic Braces - Php 28k-300k">Orthodontic Braces - Php 28k-300k</option>    
+                <option value="1">Dental Bonding - Php 150k</option>
+                <option value="2">Dental Crowns - Php 20k-40k</option>
+                <option value="3">Dentures - Php 5k-12k</option>
+                <option value="4">Teeth Cleaning - Php 800-1.2k</option>
+                <option value="5">Tooth Extractions - Php 500-1.5k</option>
+                <option value="6">Orthodontic Braces - Php 28k-300k</option>    
               </select>
             </div>
 
-            <!-- Dentist Selection -->
             <div class="form-group full-width">
               <label for="dentist">Dentist *</label>
-              <select name="dentist" id="dentist" name="dentist" required>
+              <select id="dentist" name="dentist" required>
                 <option value="">Select a dentist</option>
-                <option value="Monica Empleo - Cosmetic & Restorative">Monica Empleo - Cosmetic & Restorative</option>
-                <option value="Fvienj Nopuente - Oral Surgery">Fvienj Nopuente - Oral Surgery</option>
+                <option value="1">Monica Empleo - Cosmetic & Restorative</option>
+                <option value="2">Fvienj Nopuente - Oral Surgery</option>
               </select>
             </div>
 
-            <!-- Appointment Date -->
             <div class="form-group">
-              <label for="appointmentDate">Preferred Date *</label>
-              <input name="appointment_date" type="date" id="appointmentDate" name="appointmentDate" required min="2024-01-15" />
+              <label for="appointment_date">Preferred Date *</label>
+              <input type="date" id="appointment_date" name="appointment_date" required />
             </div>
 
             <div class="form-group">
-              <label for="appointmentTime">Preferred Time *</label>
-              <select name="appointment_time" id="appointmentTime" name="appointmentTime" required>
+              <label for="appointment_time">Preferred Time *</label>
+              <select id="appointment_time" name="appointment_time" required>
                 <option value="">Select time</option>
                 <option value="08:00">8:00 AM</option>
                 <option value="09:00">9:00 AM</option>
@@ -102,13 +100,12 @@
             </div>
           </div>
 
-          <!-- Payment Section -->
           <div class="payment-section">
             <h3>Payment Information</h3>
             <p>Please present cash at the clinic upon your appointment.</p>
             <div class="payment-methods">
               <label class="payment-method">
-                <input name="payment_method" type="radio" name="paymentMethod" value="full" checked />
+                <input type="radio" name="payment_method" value="full" checked />
                 <span>Cash</span>
               </label>
             </div>
@@ -129,45 +126,26 @@
           </div>
         </form>
       </section>
-
-      <section class="booking-info">
-        <div class="info-card">
-          <h3>Clinic Hours</h3>
-          <p><strong>Monday - Saturday:</strong> 8:00 AM - 5:00 PM</p>
-          <p><strong>Sunday:</strong> Closed</p>
-        </div>
-        <div class="info-card">
-          <h3>Confirmation</h3>
-          <p>We'll send you a confirmation email and SMS within 24 hours. Walk-ins also welcome!</p>
-        </div>
-      </section>
     </main>
   </div>
 
-  <script>
-// Enhanced booking system for updated form (with email, contact, cash payment)
+<script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Dynamic payment calculation (updated for new services)
   const serviceSelect = document.getElementById('service');
-  const paymentRadios = document.querySelectorAll('input[name="paymentMethod"]');
   
   serviceSelect.addEventListener('change', updatePayment);
-  paymentRadios.forEach(radio => radio.addEventListener('change', updatePayment));
 
-  // Sunday blocking + min date
   function setupDateRestrictions() {
-    const appointmentDate = document.getElementById('appointmentDate');
+    const appointmentDate = document.getElementById('appointment_date');
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
-    // Set minimum date to tomorrow
     appointmentDate.min = tomorrow.toISOString().split('T')[0];
     
-    // Block Sundays
     appointmentDate.addEventListener('change', function() {
       const selectedDate = new Date(this.value);
-      if (selectedDate.getDay() === 0) { // Sunday
+      if (selectedDate.getDay() === 0) { 
         alert('❌ Clinic is CLOSED on Sundays.\nPlease select Monday - Saturday.');
         this.value = '';
         this.focus();
@@ -175,58 +153,72 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Updated logic to use IDs instead of string text
   function updatePayment() {
     const serviceValue = serviceSelect.value;
-    
     let cost = 0;
-    if (serviceValue.includes('150k')) cost = 150000;
-    else if (serviceValue.includes('20k') || serviceValue.includes('40k')) cost = 30000;
-    else if (serviceValue.includes('5k') || serviceValue.includes('12k')) cost = 8500;
-    else if (serviceValue.includes('800') || serviceValue.includes('1.2k')) cost = 1000;
-    else if (serviceValue.includes('500') || serviceValue.includes('1.5k')) cost = 1000;
-    else if (serviceValue.includes('28k') || serviceValue.includes('300k')) cost = 50000; // Braces
-
-    document.getElementById('serviceCost').textContent = `Php ${cost.toLocaleString()}`;
-    document.getElementById('totalAmount').textContent = `Php ${cost.toLocaleString()}`; // Cash = full amount
-  }
-
-    document.getElementById('bookingForm').addEventListener('submit', function(e) {
-    e.preventDefault();
     
-    // Final Sunday check
-    const appointmentDate = document.getElementById('appointmentDate').value;
-    const selectedDate = new Date(appointmentDate);
-    if (selectedDate.getDay() === 0) {
-      alert('❌ Sunday bookings not allowed. Clinic closed.');
-      return;
+    switch(serviceValue) {
+        case "1": cost = 150000; break;
+        case "2": cost = 30000; break;
+        case "3": cost = 8500; break;
+        case "4": cost = 1000; break;
+        case "5": cost = 1000; break;
+        case "6": cost = 50000; break;
     }
 
-    // Get all form data (matches your NEW field names)
-    const formData = new FormData(this);
-    const bookingData = Object.fromEntries(formData);
+    document.getElementById('serviceCost').textContent = `Php ${cost.toLocaleString()}`;
+    document.getElementById('totalAmount').textContent = `Php ${cost.toLocaleString()}`;
+  }
+
+  document.getElementById('bookingForm').addEventListener('submit', function(e) {
+    e.preventDefault();
     
-    // 1. Show loading state
     const submitBtn = this.querySelector('.primary-button');
     const originalText = submitBtn.textContent;
     submitBtn.innerHTML = '⏳ Processing...';
     submitBtn.disabled = true;
 
-    // 2. Simulate server processing (2 seconds)
-    setTimeout(() => {
-      showBookingSuccess(bookingData);
-      
-      // 3. Reset form for next booking
-      this.reset();
-      updatePayment();
-      
-      // 4. Restore button
+    const formData = new FormData(this);
+    const bookingData = Object.fromEntries(formData);
+    
+    // Get Laravel CSRF Token
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    // 🔴 LARAVEL FETCH REQUEST 🔴
+    fetch('/book-appointment', {
+      method: 'POST',
+      headers: {
+        'X-CSRF-TOKEN': csrfToken,
+        'Accept': 'application/json'
+      },
+      body: formData
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        showBookingSuccess(bookingData);
+        this.reset();
+        updatePayment();
+      } else {
+        alert('Error: ' + result.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred. Please try again.');
+    })
+    .finally(() => {
       submitBtn.innerHTML = originalText;
       submitBtn.disabled = false;
-    }, 2000);
+    });
   });
 
-  // Beautiful Success Modal (Updated for your fields)
   function showBookingSuccess(data) {
+    // Get the display text for the select dropdowns (for the beautiful UI)
+    const serviceText = document.getElementById('service').options[document.getElementById('service').selectedIndex].text;
+    const dentistText = document.getElementById('dentist').options[document.getElementById('dentist').selectedIndex].text;
+
     const modal = document.createElement('div');
     modal.className = 'booking-success-modal';
     modal.innerHTML = `
@@ -237,50 +229,34 @@ document.addEventListener('DOMContentLoaded', function() {
         
         <div class="booking-summary">
           <div class="summary-row">
-            <span>👤 ${data.pfirstName} ${data.plastName}</span>
-            <span>📧 ${data.patientemail}</span>
+            <span>👤 ${data.first_name} ${data.last_name}</span>
+            <span>📧 ${data.email}</span>
           </div>
           <div class="summary-row">
-            <span>📞 ${data.patientcontact}</span>
-            <span>🎂 ${data.dateOfBirth}</span>
+            <span>📞 ${data.contact}</span>
+            <span>🎂 ${data.dob}</span>
           </div>
           <div class="summary-row">
-            <span>🦷 ${data.service}</span>
-            <span>👩‍⚕️ ${data.dentist}</span>
+            <span>🦷 ${serviceText.split(' -')[0]}</span>
+            <span>👩‍⚕️ ${dentistText.split(' -')[0]}</span>
           </div>
           <div class="summary-row highlight">
-            <span>📅 ${data.appointmentDate}</span>
-            <span>🕒 ${data.appointmentTime}</span>
+            <span>📅 ${data.appointment_date}</span>
+            <span>🕒 ${data.appointment_time}</span>
           </div>
-          <div class="summary-row highlight">
-            <span>💰 Cash Payment</span>
-            <span>Php ${document.getElementById('totalAmount').textContent}</span>
-          </div>
-        </div>
-        
-        <div class="confirmation-details">
-          <p><strong>📧 Confirmation Email:</strong> Sent to ${data.patientemail}</p>
-          <p><strong>📱 SMS Confirmation:</strong> Sent to ${data.patientcontact}</p>
-          <p><strong>⏰ Expected Reply:</strong> Within 24 hours</p>
         </div>
         
         <div class="success-actions">
-          <button onclick="window.location.href='contact.html'" class="secondary-btn">
-            Contact Us
-          </button>
           <button onclick="this.closest('.booking-success-modal').remove()" class="primary-btn">
-            Book Another
+            Done
           </button>
         </div>
       </div>
     `;
     document.body.appendChild(modal);
-    
-    // Auto-close after 15 seconds
     setTimeout(() => modal.remove(), 15000);
   }
 
-  // Initialize everything
   setupDateRestrictions();
   updatePayment();
 });
