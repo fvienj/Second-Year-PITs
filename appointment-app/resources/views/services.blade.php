@@ -10,8 +10,8 @@
 
 <body>
   <div class="page-shell">
-    <header class="site-header">
-      <a class="brand" href="index.html">Bag-ang Dental Clinic
+      <header class="site-header">
+      <a class="brand" href="{{ url('/home') }}">Bag-ang Dental Clinic</a>
       </a>
       <nav class="site-nav" aria-label="Primary">
         <a href="{{ url('/home') }}">Home</a>
@@ -176,7 +176,7 @@
         <h2>Ready to Smile?</h2>
         <p>Select a service and proceed to book an appointment.</p>
         <div class="booking-buttons">
-          <a href="book.html" class="primary-button">Book an Appointment</a>
+          <a href="{{ url('/book') }}" class="primary-button">Book an Appointment</a>
         </div>
       </section>
     </main>

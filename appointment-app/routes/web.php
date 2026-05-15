@@ -20,9 +20,9 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__.'/settings.php';*/
 
-
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AppointmentController;
+Route::redirect('/', '/home'); 
 //view main pages
 Route::view('/home', 'home');
 Route::view('/book', 'book');
@@ -30,4 +30,4 @@ Route::view('/about', 'about');
 Route::view('/contact', 'contact');
 Route::view('/services', 'services');
 
-
+Route::post('/book-appointment', [AppointmentController::class, 'store']);
