@@ -4,8 +4,8 @@
   "functions": {
     "api/index.php": { "runtime": "vercel-php@0.6.0" }
   },
-  "routes": [
-    { "src": "/(css|js|images)/(.*)", "dest": "/public/$1/$2" },
+"routes": [
+    { "src": "/(css|js|images|favicon.ico)/(.*)", "dest": "/public/$1/$2" },
     { "src": "/(.*)", "dest": "/api/index.php" }
   ],
   "env": {
