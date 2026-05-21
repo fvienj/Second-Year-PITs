@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Appointment | Bag-Ang Dental Clinic</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="book.css" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="index.html">Bag-ang Dental Clinic</a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="index.html">Home</a>
+        <a href="about.html">About Us</a>
+        <a href="services.html">Services</a>
+        <a href="#booking">Book Appointment</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </header>
+
+    <main class="booking-main">
+      <!-- Tabs: Book New | Check Queue -->
+      <div class="booking-tabs">
+        <button class="tab-btn active" data-tab="book">📅 Book New</button>
+        <button class="tab-btn" data-tab="queue">🔍 Check Queue</button>
+      </div>
+
+      <!-- BOOK NEW APPOINTMENT TAB -->
+      <section class="tab-content active" id="book-tab">
+        <section class="booking-header">
+          <p class="eyebrow">BAG-ANG DENTAL CLINIC</p>
+          <h1>Book Your Appointment</h1>
+          <p class="lead">Complete the form below to schedule your dental appointment.</p>
+        </section>
+
+        <section class="booking-form-section">
+          <form class="booking-form" id="bookingForm">
+            <div class="form-grid">
+              <!-- Patient Information -->
+              <div class="form-group">
+                <label for="pfirstName">First Name *</label>
+                <input type="text" id="pfirstName" name="pfirstName" required />
+              </div>
+
+              <div class="form-group">
+                <label for="plastName">Last Name *</label>
+                <input type="text" id="plastName" name="plastName" required />
+              </div>
+
+              <div class="form-group">
+                <label for="patientemail">Email *</label>
+                <input type="email" id="patientemail" name="patientemail" required />
+              </div>
+
+              <div class="form-group">
+                <label for="patientcontact">Contact Number *</label>
+                <input type="tel" id="patientcontact" name="patientcontact" required placeholder="+63 917 123 4567" />
+              </div>
+
+              <div class="form-group full-width">
+                <label for="dateOfBirth">Date of Birth *</label>
+                <input type="date" id="dateOfBirth" name="dateOfBirth" required />
+              </div>
+
+              <!-- Service Selection -->
+              <div class="form-group full-width">
+                <label for="service">Service Type *</label>
+                <select id="service" name="service" required>
+                  <option value="">Select a service</option>
+                  <option value="Dental Bonding - Php 150k">Dental Bonding - Php 150k</option>
+                  <option value="Dental Crowns - Php 20k-40k">Dental Crowns - Php 20k-40k</option>
+                  <option value="Dentures - Php 5k-12k">Dentures - Php 5k-12k</option>
+                  <option value="Teeth Cleaning - Php 800-1.2k">Teeth Cleaning - Php 800-1.2k</option>
+                  <option value="Tooth Extractions - Php 500-1.5k">Tooth Extractions - Php 500-1.5k</option>
+                  <option value="Orthodontic Braces - Php 28k-300k">Orthodontic Braces - Php 28k-300k</option>
+                </select>
+              </div>
+
+              <!-- Dentist Selection -->
+              <div class="form-group full-width">
+                <label for="dentist">Dentist *</label>
+                <select id="dentist" name="dentist" required>
+                  <option value="">Select a dentist</option>
+                  <option value="Monica Empleo - Cosmetic & Restorative">Dr. Monica Empleo - Cosmetic & Restorative</option>
+                  <option value="Fvienj Nopuente - Oral Surgery">Dr. Fvienj Nopuente - Oral Surgery</option>
+                </select>
+              </div>
+
+              <!-- Appointment Date & Time -->
+              <div class="form-group">
+                <label for="appointmentDate">Preferred Date *<br><small>(Mon-Sat only)</small></label>
+                <input type="date" id="appointmentDate" name="appointmentDate" required />
+              </div>
+
+              <div class="form-group">
+                <label for="appointmentTime">Preferred Time *</label>
+                <select id="appointmentTime" name="appointmentTime" required>
+                  <option value="">Select time</option>
+                  <option value="08:00">8:00 AM</option>
+                  <option value="09:00">9:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="13:00">1:00 PM</option>
+                  <option value="14:00">2:00 PM</option>
+                  <option value="15:00">3:00 PM</option>
+                  <option value="16:00">4:00 PM</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Payment Section (Cash Only) -->
+            <div class="payment-section">
+              <h3>💰 Payment Information</h3>
+              <p><strong>Cash payment only</strong> - Please bring exact change if possible.</p>
+              <div class="payment-summary" id="paymentSummary">
+                <div class="summary-item">
+                  <span>Service Cost:</span>
+                  <span id="serviceCost">Php 0</span>
+                </div>
+                <div class="summary-item total">
+                  <span>Total Amount (Cash):</span>
+                  <span id="totalAmount">Php 0</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="primary-button">✅ Confirm Booking</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="booking-info">
+          <div class="info-card">
+            <h3>🕒 Clinic Hours</h3>
+            <p><strong>Monday - Saturday:</strong> 8:00 AM - 5:00 PM</p>
+            <p><strong>Sunday:</strong> <span style="color: #ef4444;">Closed</span></p>
+          </div>
+          <div class="info-card">
+            <h3>📱 Confirmation</h3>
+            <p>✅ Receive SMS & Email within 24 hours<br>
+            📱 <strong>Save your 4-digit booking number!</strong><br>
+            🔍 Use "Check Queue" tab to track status</p>
+          </div>
+        </section>
+      </section>
+
+      <!-- QUEUE LIST TAB -->
+      <section class="tab-content" id="queue-tab">
+        <section class="queue-header">
+          <h2>Check Your Queue Status</h2>
+          <p class="lead">Enter your <strong>4-digit booking number</strong> to see your appointment status and queue position.</p>
+        </section>
+
+        <section class="queue-check-section">
+          <div class="queue-form-container">
+            <form class="queue-check-form" id="queueCheckForm">
+              <div class="form-group full-width queue-input-group">
+                <label for="bookingNumber">4-Digit Booking Number *</label>
+                <input 
+                  type="text" 
+                  id="bookingNumber" 
+                  name="bookingNumber" 
+                  maxlength="4" 
+                  pattern="[0-9]{4}"
+                  placeholder="e.g. 1234"
+                  required 
+                />
+                <small>Check your SMS/Email confirmation for your booking number</small>
+              </div>
+              <button type="submit" class="primary-button queue-btn">🔍 Check Status</button>
+            </form>
+          </div>
+
+          <!-- Queue Results -->
+          <div class="queue-results" id="queueResults" style="display: none;">
+            <div class="status-loading" id="statusLoading">
+              <div class="loading-spinner"></div>
+              <p>Checking your queue status...</p>
+            </div>
+            <div class="status-result" id="statusResult"></div>
+          </div>
+        </section>
+
+        <section class="queue-info">
+          <div class="info-card">
+            <h3>📊 Queue Status Legend</h3>
+            <ul>
+              <li><span class="status-waiting">⏳ Waiting</span> - In queue</li>
+              <li><span class="status-ready">✅ Ready</span> - Next to be called</li>
+              <li><span class="status-completed">🎉 Completed</span> - Appointment finished</li>
+              <li><span class="status-cancelled">❌ Cancelled</span> - Booking cancelled</li>
+            </ul>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-content">
+        <p>&copy; 2024 Bag-Ang Dental Clinic. USTP Cagayan de Oro. All rights reserved.</p>
+        <p>📍 Located at University of Science and Technology of Southern Philippines</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const targetTab = btn.dataset.tab;
+          
+          // Update active tab button
+          tabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          
+          // Show target tab content
+          tabContents.forEach(content => {
+            content.classList.remove('active');
+            if (content.id === targetTab + '-tab') {
+              content.classList.add('active');
+            }
+          });
+        });
+      });
+
+      // Service cost calculation
+      const serviceSelect = document.getElementById('service');
+      const serviceCost = document.getElementById('serviceCost');
+      const totalAmount = document.getElementById('totalAmount');
+
+      serviceSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex].text;
+        const priceMatch = selectedOption.match(/Php\s*([\d.k-]+)$/i);
+        
+        if (priceMatch) {
+          serviceCost.textContent = `Php ${priceMatch[1]}`;
+          totalAmount.textContent = `Php ${priceMatch[1]}`;
+        } else {
+          serviceCost.textContent = 'Php 0';
+          totalAmount.textContent = 'Php 0';
+        }
+      });
+
+      // Form submission handlers
+      document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('✅ Booking confirmed! Check your email/SMS for your 4-digit booking number.');
+        this.reset();
+        serviceCost.textContent = 'Php 0';
+        totalAmount.textContent = 'Php 0';
+      });
+
+      document.getElementById('queueCheckForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const bookingNumber = document.getElementById('bookingNumber').value;
+        
+        if (bookingNumber.length === 4 && /^\d+$/.test(bookingNumber)) {
+          document.getElementById('statusLoading').style.display = 'block';
+          document.getElementById('statusResult').innerHTML = '';
+          
+          // Simulate API call
+          setTimeout(() => {
+            document.getElementById('statusLoading').style.display = 'none';
+            document.getElementById('statusResult').innerHTML = `
+              <div class="status-card waiting">
+                <h3>Booking #${bookingNumber}</h3>
+                <div class="status-indicator">⏳ Waiting</div>
+                <p><strong>Position:</strong> #3 in queue</p>
+                <p><strong>Service:</strong> Teeth Cleaning</p>
+                <p><strong>Dentist:</strong> Dr. Monica Empleo</p>
+                <p><strong>Scheduled:</strong> Today, 2:00 PM</p>
+              </div>
+            `;
+            document.getElementById('queueResults').style.display = 'block';
+          }, 1500);
+        }
+      });
+
+      // Set minimum date to today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('appointmentDate').setAttribute('min', today);
+    });
+  </script>
+</body>
+</html>
