@@ -158,10 +158,9 @@ class AppointmentController extends Controller
         }
 
         // RETURN BOOK
-        return response()->json([
+    return response()->json([
             'success' => true,
-            'message' => 'Appointment successfully booked!',
-            'redirect' => route('booking.success') 
+            'message' => 'Appointment successfully booked!'
         ]);
     }
 }
