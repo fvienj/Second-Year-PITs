@@ -61,12 +61,11 @@
               <label for="service">Service Type *</label>
               <select id="service" name="service" required>
                 <option value="">Select a service</option>
-                <option value="1">Dental Bonding - Php 150k</option>
-                <option value="2">Dental Crowns - Php 20k-40k</option>
-                <option value="3">Dentures - Php 5k-12k</option>
-                <option value="4">Teeth Cleaning - Php 800-1.2k</option>
-                <option value="5">Tooth Extractions - Php 500-1.5k</option>
-                <option value="6">Orthodontic Braces - Php 28k-300k</option>    
+                @foreach($services as $service)
+                <option value="{{ $service->services_id }}">
+                  {{ $service->service_name }} - Php {{ number_format($service->service_cost) }}
+                </option>
+              @endforeach  
               </select>
             </div>
 
@@ -74,9 +73,12 @@
               <label for="dentist">Dentist *</label>
               <select id="dentist" name="dentist" required>
                 <option value="">Select a dentist</option>
-                <option value="1">Monica Empleo - Cosmetic & Restorative</option>
-                <option value="2">Fvienj Nopuente - Oral Surgery</option>
-              </select>
+                @foreach($dentists as $dentist)
+                  <option value="{{ $dentist->dentist_id }}">
+                    Dr. {{ $dentist->dentist_firstname }} {{ $dentist->dentist_lastname }} - {{ $dentist->dentist_specialization }}
+                  </option>
+                @endforeach
+                </select>
             </div>
 
             <div class="form-group">
@@ -135,41 +137,79 @@ document.addEventListener('DOMContentLoaded', function() {
   
   serviceSelect.addEventListener('change', updatePayment);
 
-  function setupDateRestrictions() {
-    const appointmentDate = document.getElementById('appointment_date');
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    appointmentDate.min = tomorrow.toISOString().split('T')[0];
-    
-    appointmentDate.addEventListener('change', function() {
-      const selectedDate = new Date(this.value);
-      if (selectedDate.getDay() === 0) { 
-        alert('❌ Clinic is CLOSED on Sundays.\nPlease select Monday - Saturday.');
-        this.value = '';
-        this.focus();
-      }
-    });
-  }
+function setupDateRestrictions() {
+  const appointmentDate = document.getElementById('appointment_date');
+  const dentistSelect = document.getElementById('dentist');
+  const timeSelect = document.getElementById('appointment_time');
+  
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  // Prevent booking past or today slots
+  appointmentDate.min = tomorrow.toISOString().split('T')[0];
+  
+  // Run our check whenever the date OR the dentist changes
+  appointmentDate.addEventListener('change', checkBookedSlots);
+  dentistSelect.addEventListener('change', checkBookedSlots);
 
-  // Updated logic to use IDs instead of string text
-  function updatePayment() {
-    const serviceValue = serviceSelect.value;
-    let cost = 0;
-    
-    switch(serviceValue) {
-        case "1": cost = 150000; break;
-        case "2": cost = 30000; break;
-        case "3": cost = 8500; break;
-        case "4": cost = 1000; break;
-        case "5": cost = 1000; break;
-        case "6": cost = 50000; break;
+  function checkBookedSlots() {
+    const dateValue = appointmentDate.value;
+    const dentistValue = dentistSelect.value;
+
+    // Stop if the user hasn't selected both a date and a dentist yet
+    if (!dateValue || !dentistValue) return;
+
+    // Check Sunday rule first
+    const selectedDate = new Date(dateValue);
+    if (selectedDate.getDay() === 0) { 
+      alert('❌ Clinic is CLOSED on Sundays.\nPlease select Monday - Saturday.');
+      appointmentDate.value = '';
+      return;
     }
 
-    document.getElementById('serviceCost').textContent = `Php ${cost.toLocaleString()}`;
-    document.getElementById('totalAmount').textContent = `Php ${cost.toLocaleString()}`;
+    // Reset all options to enabled/normal look before checking
+    Array.from(timeSelect.options).forEach(option => {
+      if (option.value !== "") {
+        option.disabled = false;
+        option.textContent = option.textContent.replace(' (Booked)', '');
+      }
+    });
+
+    // FETCH LOCAL DATA: Call our availability checking route
+    fetch(`/check-availability?date=${dateValue}&dentist_id=${dentistValue}`)
+      .then(response => response.json())
+      .then(bookedTimes => {
+        // Loop through the dropdown select options
+        Array.from(timeSelect.options).forEach(option => {
+          // If the option value matches a time in our booked list, grey it out
+          if (bookedTimes.includes(option.value)) {
+            option.disabled = true;
+            option.textContent = option.textContent + ' (Booked)';
+          }
+        });
+      })
+      .catch(err => console.error('Error checking availability:', err));
   }
+}
+
+  // Update payment summary based on selected service
+function updatePayment() {
+  const serviceSelect = document.getElementById('service');
+  const serviceValue = serviceSelect.value;
+  let cost = 0;
+  
+  // find the matching service price from the database rows
+  const servicesData = @json($services);
+  const selectedService = servicesData.find(s => s.services_id == serviceValue);
+  
+  if (selectedService) {
+      cost = parseFloat(selectedService.service_cost);
+  }
+
+  document.getElementById('serviceCost').textContent = `Php ${cost.toLocaleString()}`;
+  document.getElementById('totalAmount').textContent = `Php ${cost.toLocaleString()}`;
+}
 
   document.getElementById('bookingForm').addEventListener('submit', function(e) {
     e.preventDefault();
