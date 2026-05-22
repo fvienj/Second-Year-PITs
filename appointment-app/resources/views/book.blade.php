@@ -61,12 +61,11 @@
               <label for="service">Service Type *</label>
               <select id="service" name="service" required>
                 <option value="">Select a service</option>
-                <option value="1">Dental Bonding - Php 150k</option>
-                <option value="2">Dental Crowns - Php 20k-40k</option>
-                <option value="3">Dentures - Php 5k-12k</option>
-                <option value="4">Teeth Cleaning - Php 800-1.2k</option>
-                <option value="5">Tooth Extractions - Php 500-1.5k</option>
-                <option value="6">Orthodontic Braces - Php 28k-300k</option>    
+                @foreach($services as $service)
+                  <option value="{{ $service->services_id }}" data-cost="{{ $service->service_cost }}">
+                    {{ $service->service_name }} - Php {{ number_format($service->service_cost) }}
+                  </option>
+                @endforeach
               </select>
             </div>
 
@@ -74,8 +73,11 @@
               <label for="dentist">Dentist *</label>
               <select id="dentist" name="dentist" required>
                 <option value="">Select a dentist</option>
-                <option value="1">Monica Empleo - Cosmetic & Restorative</option>
-                <option value="2">Fvienj Nopuente - Oral Surgery</option>
+                @foreach($dentists as $dentist)
+                  <option value="{{ $dentist->dentist_id }}">
+                    Dr. {{ $dentist->dentist_firstname }} {{ $dentist->dentist_lastname }} ({{ $dentist->dentist_specialization }})
+                  </option>
+                @endforeach
               </select>
             </div>
 
@@ -132,40 +134,63 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   const serviceSelect = document.getElementById('service');
+  const dentistSelect = document.getElementById('dentist');
+  const appointmentDate = document.getElementById('appointment_date');
+  const timeSelect = document.getElementById('appointment_time');
   
   serviceSelect.addEventListener('change', updatePayment);
+  appointmentDate.addEventListener('change', checkBookedSlots);
+  dentistSelect.addEventListener('change', checkBookedSlots);
 
   function setupDateRestrictions() {
-    const appointmentDate = document.getElementById('appointment_date');
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
     
     appointmentDate.min = tomorrow.toISOString().split('T')[0];
-    
-    appointmentDate.addEventListener('change', function() {
-      const selectedDate = new Date(this.value);
-      if (selectedDate.getDay() === 0) { 
-        alert('❌ Clinic is CLOSED on Sundays.\nPlease select Monday - Saturday.');
-        this.value = '';
-        this.focus();
-      }
-    });
   }
 
-  // Updated logic to use IDs instead of string text
-  function updatePayment() {
-    const serviceValue = serviceSelect.value;
-    let cost = 0;
-    
-    switch(serviceValue) {
-        case "1": cost = 150000; break;
-        case "2": cost = 30000; break;
-        case "3": cost = 8500; break;
-        case "4": cost = 1000; break;
-        case "5": cost = 1000; break;
-        case "6": cost = 50000; break;
+  // 🐋 ASYNCHRONOUS CHECKER MIDDLEWARE: Greys out booked times dynamically from cloud state
+  function checkBookedSlots() {
+    const dateValue = appointmentDate.value;
+    const dentistValue = dentistSelect.value;
+
+    if (!dateValue || !dentistValue) return;
+
+    // Sunday Border-Control Boundary Interceptor
+    if (new Date(dateValue).getDay() === 0) { 
+      alert('❌ Clinic is CLOSED on Sundays.\nPlease select Monday - Saturday.');
+      appointmentDate.value = '';
+      return;
     }
+
+    // Refresh all time options back to active base states before executing fetch map
+    Array.from(timeSelect.options).forEach(option => {
+      if (option.value !== "") {
+        option.disabled = false;
+        option.textContent = option.textContent.replace(' (Booked)', '');
+      }
+    });
+
+    // Fire fetch request to our async API query route
+    fetch(`/check-availability?date=${dateValue}&dentist_id=${dentistValue}`)
+      .then(response => response.json())
+      .then(bookedTimes => {
+        Array.from(timeSelect.options).forEach(option => {
+          if (bookedTimes.includes(option.value)) {
+            option.disabled = true;
+            option.textContent = option.textContent + ' (Booked)';
+          }
+        });
+      })
+      .catch(err => console.error("Error running availability bridge:", err));
+  }
+
+  // 🐋 DYNAMIC PRICING EVALUATION: Pulls data properties straight from option properties
+  function updatePayment() {
+    const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+    const costAttr = selectedOption.getAttribute('data-cost');
+    const cost = costAttr ? parseFloat(costAttr) : 0;
 
     document.getElementById('serviceCost').textContent = `Php ${cost.toLocaleString()}`;
     document.getElementById('totalAmount').textContent = `Php ${cost.toLocaleString()}`;
@@ -181,11 +206,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const formData = new FormData(this);
     const bookingData = Object.fromEntries(formData);
-    
-    // Get Laravel CSRF Token
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-    // 🔴 LARAVEL FETCH REQUEST 🔴
     fetch('/book-appointment', {
       method: 'POST',
       headers: {
@@ -215,9 +237,8 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   function showBookingSuccess(data) {
-    // Get the display text for the select dropdowns (for the beautiful UI)
-    const serviceText = document.getElementById('service').options[document.getElementById('service').selectedIndex].text;
-    const dentistText = document.getElementById('dentist').options[document.getElementById('dentist').selectedIndex].text;
+    const serviceText = serviceSelect.options[serviceSelect.selectedIndex].text;
+    const dentistText = dentistSelect.options[dentistSelect.selectedIndex].text;
 
     const modal = document.createElement('div');
     modal.className = 'booking-success-modal';
@@ -238,7 +259,7 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
           <div class="summary-row">
             <span>🦷 ${serviceText.split(' -')[0]}</span>
-            <span>👩‍⚕️ ${dentistText.split(' -')[0]}</span>
+            <span>👩‍⚕️ ${dentistText.split(' (')[0]}</span>
           </div>
           <div class="summary-row highlight">
             <span>📅 ${data.appointment_date}</span>
