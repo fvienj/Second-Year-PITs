@@ -24,7 +24,7 @@ class AppointmentController extends Controller
                 'patient_dob'       => $request->input('dob'),
             ]);
 
-            //  Save the appointment details linked to the patient
+            // Save the appointment details linked to the patient
             $appointment = Appointment::create([
                 'patient_id'       => $patient->getKey(),
                 'dentist_id'       => $request->input('dentist'),
@@ -33,14 +33,14 @@ class AppointmentController extends Controller
                 'appointment_time' => $request->input('appointment_time'),
             ]);
 
-            //  Look up service details from the database
+            // Look up service details from the database
             $serviceId = $request->input('service');
             $serviceDetails = DB::table('services')->where('services_id', $serviceId)->first();
             
             $serviceName = $serviceDetails ? $serviceDetails->service_name : 'Standard Dental Consultation';
             $amountDue = $serviceDetails ? $serviceDetails->service_cost : 0.00;
 
-            //  Insert into the patient_services table
+            // Insert into the patient_services table
             DB::table('patient_services')->insert([
                 'patient_id' => $patient->getKey(),
                 'service_id' => $serviceId
@@ -90,10 +90,9 @@ class AppointmentController extends Controller
             ], 500);
         }
 
-        // TEXTBEE INTEGRATION
+        // TEXTBEE SMS INTEGRATION
         $messageText = "Hi {$patient->patient_firstname}! Your booking for {$serviceName} at Bag-Ang Dental Clinic is confirmed for {$appointment->appointment_date} at {$appointment->appointment_time}.";
         
-        // Format the local mobile number string
         $phoneNumber = $patient->patient_phone;
         if (str_starts_with($phoneNumber, '09')) {
             $phoneNumber = '+63' . substr($phoneNumber, 1);
@@ -111,7 +110,6 @@ class AppointmentController extends Controller
                     'message'    => $messageText
                 ]);
 
-            // Log SMS outcome to the database
             DB::table('notification_logs')->insert([
                 'patient_id'     => $patient->getKey(),
                 'appointment_id' => $appointment->getKey(),
@@ -126,24 +124,30 @@ class AppointmentController extends Controller
             ]);
         }
 
-        // GMAIL SMTP AUTOMATED EMAIL
+        // RESEND API
         $patientEmail = $request->input('email');
         
-        if (!empty($patientEmail)) {
+        if (!empty($patientEmail) && env('MAIL_PASSWORD')) {
             try {
-                // Laravel's built-in mail sender
-                \Illuminate\Support\Facades\Mail::raw($messageText, function ($message) use ($patientEmail) {
-                    $message->to($patientEmail)
-                            ->subject('Appointment Confirmed - Bag-Ang Dental Clinic');
-                });
+                
+                $emailResponse = Http::withToken(env('MAIL_PASSWORD'))
+                    ->post('https://api.resend.com/emails', [
+                        'from'    => 'Bagang Dental Clinic <onboarding@resend.dev>',
+                        'to'      => [$patientEmail],
+                        'subject' => 'Appointment Confirmed - Bag-Ang Dental Clinic',
+                        'html'    => "
+                            <h3>Hello {$patient->patient_firstname},</h3>
+                            <p>{$messageText}</p>
+                            <p>Thank you for choosing our clinic!</p>
+                        "
+                    ]);
 
-                // Log Email outcome to the database
                 DB::table('notification_logs')->insert([
                     'patient_id'     => $patient->getKey(),
                     'appointment_id' => $appointment->getKey(),
                     'channel'        => 'Email',
-                    'status'         => 'Delivered',
-                    'error_message'  => null
+                    'status'         => $emailResponse->successful() ? 'Delivered' : 'Failed',
+                    'error_message'  => $emailResponse->successful() ? null : $emailResponse->body()
                 ]);
             } catch (\Exception $e) {
                 DB::table('notification_logs')->insert([
@@ -153,10 +157,11 @@ class AppointmentController extends Controller
             }
         }
 
-        // Return the final success JSON 
+        // RETURN BOOK
         return response()->json([
             'success' => true,
-            'message' => 'Appointment successfully booked!'
+            'message' => 'Appointment successfully booked!',
+            'redirect' => route('booking.success') 
         ]);
     }
 }
