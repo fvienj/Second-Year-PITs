@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
     appointmentDate.min = tomorrow.toISOString().split('T')[0];
   }
 
-  // 🐋 ASYNCHRONOUS CHECKER MIDDLEWARE: Greys out booked times dynamically from cloud state
+  // Greys out booked times dynamically from cloud state
   function checkBookedSlots() {
     const dateValue = appointmentDate.value;
     const dentistValue = dentistSelect.value;

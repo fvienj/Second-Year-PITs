@@ -94,7 +94,7 @@ class AppointmentController extends Controller
             // Commit all local and cloud database records safely together before launching external network streams
             DB::commit();
 
-            // 🌟 INTEGRATION A: Local System File Interchange Bridge 🌟
+            // Local System File Interchange Bridge 
             $integrationPayload = [
                 'event_type'        => 'APPOINTMENT_BOOKED',
                 'timestamp'         => now()->toIso8601String(),
@@ -113,7 +113,7 @@ class AppointmentController extends Controller
             $fileName = 'sync_appt_' . $appointment->getKey() . '_' . time() . '.json';
             file_put_contents($directoryPath . '/' . $fileName, json_encode($integrationPayload, JSON_PRETTY_PRINT));
 
-            // 🌟 INTEGRATION B: textbee.dev External Device SMS Gateway Integration 🌟
+            //  textbee.dev External Device SMS Gateway Integration 
             $smsMessage = "Hi " . $validated['first_name'] . ", your appointment for " . $serviceName . " on " . $validated['appointment_date'] . " at " . $validated['appointment_time'] . " is CONFIRMED at Bag-Ang Dental Clinic. Total Due: Php " . number_format($amountDue) . ". Thank you!";
             
             $textbeeApiKey   = env('TEXTBEE_API_KEY');
