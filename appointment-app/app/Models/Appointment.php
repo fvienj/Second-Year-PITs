@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Appointment extends Model
 {
-    protected $table = 'Appointment';
+    use HasFactory;
+
+    protected $table = 'appointment';
     protected $primaryKey = 'appointment_id';
     public $timestamps = false;
 

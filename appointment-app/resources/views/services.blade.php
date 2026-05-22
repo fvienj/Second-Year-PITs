@@ -181,6 +181,6 @@
       </section>
     </main>
   </div>
-
+@include('chatbot')
 </body>
 </html>
